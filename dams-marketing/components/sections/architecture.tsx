@@ -116,6 +116,8 @@ export function Architecture() {
   const isInView = useInView(containerRef, { once: false, margin: "200px" });
   const [progress, setProgress] = useState(0);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
+  const [pinnedActive, setPinnedActive] = useState<Set<string>>(new Set());
+  const wasDragging = useRef(false);
   const reducedMotion = useReducedMotion();
 
   // Unified rotation and time updates
@@ -194,6 +196,7 @@ export function Architecture() {
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     isDragging.current = true;
+    wasDragging.current = false;
     dragStart.current = { x: e.clientX, y: e.clientY };
     rotationStart.current = { x: targetRotation.current.x, y: targetRotation.current.y };
   };
@@ -212,6 +215,9 @@ export function Architecture() {
 
     const dx = e.clientX - dragStart.current.x;
     const dy = e.clientY - dragStart.current.y;
+    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+      wasDragging.current = true;
+    }
     const sensitivity = 0.007;
 
     targetRotation.current = {
@@ -222,6 +228,20 @@ export function Architecture() {
 
   const handleMouseUp = () => {
     isDragging.current = false;
+  };
+
+  // Scroll reveal mappings
+  const handleNodeClick = (nodeId: string) => {
+    if (wasDragging.current) return;
+    setPinnedActive((prev) => {
+      const next = new Set(prev);
+      if (next.has(nodeId)) {
+        next.delete(nodeId);
+      } else {
+        next.add(nodeId);
+      }
+      return next;
+    });
   };
 
   // Scroll reveal mappings
@@ -244,7 +264,6 @@ export function Architecture() {
   if (p > 0.8) activeNodes.add("agent");
   if (p > 0.85) activeNodes.add("gate");
   if (p > 0.9) activeNodes.add("codebase");
-
   // Project 3D nodes
   const projectedNodes: ProjectedNode[] = nodes.map((node) => {
     const proj = project(node.x, node.y, node.z, animState.rotX, animState.rotY);
@@ -314,7 +333,9 @@ export function Architecture() {
 
               {/* 1. Connection lines (Rendered with depth cues) */}
               {sortedConnections.map((pc, index) => {
-                const active = activeNodes.has(pc.fromNode.id) && activeNodes.has(pc.toNode.id);
+                const fromActive = activeNodes.has(pc.fromNode.id) || pinnedActive.has(pc.fromNode.id) || hoveredNodeId === pc.fromNode.id;
+                const toActive = activeNodes.has(pc.toNode.id) || pinnedActive.has(pc.toNode.id) || hoveredNodeId === pc.toNode.id;
+                const active = (fromActive && toActive) || (hoveredNodeId === pc.fromNode.id) || (hoveredNodeId === pc.toNode.id);
                 const depth = getDepthProgress(pc.avgZ);
                 const strokeOpacity = active ? 0.05 + 0.35 * depth : 0.02;
                 const strokeWidth = active ? 0.6 + 1.2 * depth : 0.4;
@@ -336,7 +357,9 @@ export function Architecture() {
 
               {/* 2. Flowing data packets (Rendered along connection paths) */}
               {sortedConnections.map((pc, index) => {
-                const active = activeNodes.has(pc.fromNode.id) && activeNodes.has(pc.toNode.id);
+                const fromActive = activeNodes.has(pc.fromNode.id) || pinnedActive.has(pc.fromNode.id) || hoveredNodeId === pc.fromNode.id;
+                const toActive = activeNodes.has(pc.toNode.id) || pinnedActive.has(pc.toNode.id) || hoveredNodeId === pc.toNode.id;
+                const active = (fromActive && toActive) || (hoveredNodeId === pc.fromNode.id) || (hoveredNodeId === pc.toNode.id);
                 if (!active) return null;
 
                 const speed = 0.5 + (index % 3) * 0.25;
@@ -363,7 +386,7 @@ export function Architecture() {
 
               {/* 3. Codebase Nodes (Rendered sorted back-to-front) */}
               {sortedNodes.map((node) => {
-                const active = activeNodes.has(node.id);
+                const active = activeNodes.has(node.id) || pinnedActive.has(node.id) || hoveredNodeId === node.id;
                 const depth = getDepthProgress(node.projZ);
                 const isHovered = hoveredNodeId === node.id;
 
@@ -387,6 +410,7 @@ export function Architecture() {
                     key={`node-${node.id}`}
                     onMouseEnter={() => setHoveredNodeId(node.id)}
                     onMouseLeave={() => setHoveredNodeId(null)}
+                    onClick={() => handleNodeClick(node.id)}
                     className="cursor-pointer"
                   >
                     {/* Ring highlight when hovered or active */}
