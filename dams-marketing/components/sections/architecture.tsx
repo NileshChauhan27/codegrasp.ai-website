@@ -127,6 +127,9 @@ export function Architecture() {
 
   const targetRotation = useRef({ x: -0.15, y: 0.35 });
   const mouseOver = useRef(false);
+  const isDragging = useRef(false);
+  const dragStart = useRef({ x: 0, y: 0 });
+  const rotationStart = useRef({ x: -0.15, y: 0.35 });
 
   useEffect(() => {
     if (reducedMotion || !isInView) return;
@@ -158,7 +161,12 @@ export function Architecture() {
         let rx = prev.rotX;
         let ry = prev.rotY;
 
-        if (mouseOver.current) {
+        if (isDragging.current) {
+          const dx = targetRotation.current.x - prev.rotX;
+          const dy = targetRotation.current.y - prev.rotY;
+          rx += dx * 0.15;
+          ry += dy * 0.15;
+        } else if (mouseOver.current) {
           const dx = targetRotation.current.x - prev.rotX;
           const dy = targetRotation.current.y - prev.rotY;
           rx += dx * 0.08;
@@ -167,6 +175,7 @@ export function Architecture() {
           // Continuous orbit rotation when not hovered
           ry += 0.002;
           rx = rx + (-0.15 - rx) * 0.04;
+          targetRotation.current.y = ry;
         }
 
         return {
@@ -183,15 +192,36 @@ export function Architecture() {
     return () => cancelAnimationFrame(frameId);
   }, [reducedMotion, isInView]);
 
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    isDragging.current = true;
+    dragStart.current = { x: e.clientX, y: e.clientY };
+    rotationStart.current = { x: targetRotation.current.x, y: targetRotation.current.y };
+  };
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    const y = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+    if (!isDragging.current) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      const y = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+      targetRotation.current = {
+        x: y * 0.3,
+        y: x * 0.4 + animState.rotY - (animState.rotY % (Math.PI * 2)),
+      };
+      return;
+    }
+
+    const dx = e.clientX - dragStart.current.x;
+    const dy = e.clientY - dragStart.current.y;
+    const sensitivity = 0.007;
 
     targetRotation.current = {
-      x: y * 0.5,
-      y: x * 0.7,
+      x: Math.min(Math.max(rotationStart.current.x + dy * sensitivity, -Math.PI / 2), Math.PI / 2),
+      y: rotationStart.current.y + dx * sensitivity,
     };
+  };
+
+  const handleMouseUp = () => {
+    isDragging.current = false;
   };
 
   // Scroll reveal mappings
@@ -250,13 +280,16 @@ export function Architecture() {
             className="relative mx-auto mt-12 w-full max-w-5xl rounded-2xl border border-border-subtle bg-surface p-4 md:p-8 overflow-x-auto h-[320px] md:h-auto md:aspect-[16/9] cursor-grab active:cursor-grabbing select-none"
             role="img"
             aria-label="3D dynamic DAMS codebase architecture visualization showing Leiden clusters, context compilers, and active safety gates."
+            onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
             onMouseEnter={() => {
               mouseOver.current = true;
             }}
             onMouseLeave={() => {
               mouseOver.current = false;
               setHoveredNodeId(null);
+              handleMouseUp();
             }}
           >
             <svg
