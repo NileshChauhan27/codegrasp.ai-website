@@ -42,6 +42,7 @@ export function CTA() {
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button
                 render={<a href={DOCS_URL} target="_blank" rel="noopener noreferrer" />}
+                nativeButton={false}
                 size="lg"
                 className="group bg-accent text-white hover:bg-accent/90"
               >
@@ -51,6 +52,7 @@ export function CTA() {
               </Button>
               <Button
                 render={<a href={`mailto:${CONTACT_EMAIL}`} />}
+                nativeButton={false}
                 variant="outline"
                 size="lg"
               >

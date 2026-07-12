@@ -66,6 +66,7 @@ export function Hero() {
         >
           <Button
             render={<a href="#demo" />}
+            nativeButton={false}
             size="lg"
             className="group bg-accent text-white hover:bg-accent/90"
           >
@@ -74,6 +75,7 @@ export function Hero() {
           </Button>
           <Button
             render={<a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" />}
+            nativeButton={false}
             variant="outline"
             size="lg"
           >
