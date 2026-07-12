@@ -3,7 +3,7 @@ export const SITE_DOMAIN =
 
 export const SITE_URL = `https://${SITE_DOMAIN}`;
 
-export const SITE_NAME = "DAMS — Defensive Agentic Memory System";
+export const SITE_NAME = "DAMS — Defensive Agentic Memory System for AI Coding Agents";
 
 export const SITE_DESCRIPTION =
   "DAMS is a local, Dockerized codebase-intelligence workbench that atomizes PRDs into tasks, warms a SQLite cache with code snippets, and lets AI agents write the next feature without re-reading the codebase.";

@@ -5,7 +5,8 @@ import { Section } from "@/components/shared/section";
 import { Container } from "@/components/shared/container";
 import { HeroMesh } from "./hero-mesh";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Github, Sparkles, Container as ContainerIcon, Shield, Zap } from "lucide-react";
+import { ArrowRight, Sparkles, Container as ContainerIcon, Shield, Zap } from "lucide-react";
+import { Github } from "@/components/shared/icons";
 import { GITHUB_URL } from "@/lib/site";
 import { easing, duration, stagger } from "@/lib/motion";
 
@@ -63,17 +64,23 @@ export function Hero() {
           transition={{ duration: duration.reveal, ease: easing.enter, delay: stagger.default * 3 }}
           className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row"
         >
-          <Button asChild size="lg" className="group bg-accent text-white hover:bg-accent/90">
-            <a href="#demo">
-              Watch the demo
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </a>
+          <Button
+            render={<a href="#demo" />}
+            size="lg"
+            className="group bg-accent text-white hover:bg-accent/90"
+          >
+            Watch the demo
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Button>
-          <Button asChild variant="outline" size="lg">
-            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
+          <Button
+            render={<a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" />}
+            variant="outline"
+            size="lg"
+          >
+            <span className="inline-flex items-center gap-2">
               <Github className="h-4 w-4" />
               See it on GitHub
-            </a>
+            </span>
           </Button>
         </motion.div>
 

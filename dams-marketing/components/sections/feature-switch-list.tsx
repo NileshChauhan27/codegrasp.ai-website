@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { features } from "@/lib/features";
 import { cn } from "@/lib/utils";
 
@@ -14,9 +15,23 @@ export function FeatureSwitchList({
   onSelect,
   onHover,
 }: FeatureSwitchListProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const activeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (activeRef.current) {
+      activeRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "nearest",
+      });
+    }
+  }, [activeIndex]);
+
   return (
     <div
-      className="flex flex-col gap-2"
+      ref={containerRef}
+      className="flex flex-row gap-2 overflow-x-auto snap-x snap-mandatory pb-4 lg:flex-col lg:overflow-x-visible lg:pb-0 scrollbar-none"
       role="tablist"
       aria-label="DAMS features"
     >
@@ -26,6 +41,7 @@ export function FeatureSwitchList({
         return (
           <button
             key={feature.id}
+            ref={active ? activeRef : null}
             role="tab"
             aria-selected={active}
             aria-controls="feature-panel"
@@ -36,15 +52,15 @@ export function FeatureSwitchList({
             onFocus={() => onHover(index)}
             onBlur={() => onHover(null)}
             className={cn(
-              "relative flex items-center gap-3 rounded-lg border px-4 py-4 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              "relative flex shrink-0 w-[280px] snap-start lg:w-auto items-center gap-3 rounded-lg border px-4 py-4 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               active
                 ? "border-border-hover bg-surface-active"
-                : "border-border-subtle bg-surface hover:border-border-hover hover:translate-x-1"
+                : "border-border-subtle bg-surface hover:border-border-hover lg:hover:translate-x-1"
             )}
           >
             {active && (
               <span
-                className="absolute left-0 top-1/2 h-10 w-[3px] -translate-y-1/2 rounded-r bg-accent"
+                className="absolute left-0 top-1/2 h-10 w-[3px] -translate-y-1/2 rounded-r bg-accent hidden lg:block"
                 aria-hidden="true"
               />
             )}

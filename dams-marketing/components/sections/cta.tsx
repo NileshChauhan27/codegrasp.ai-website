@@ -40,15 +40,21 @@ export function CTA() {
               codebase-intelligence research behind DAMS.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Button asChild size="lg" className="group bg-accent text-white hover:bg-accent/90">
-                <a href={DOCS_URL} target="_blank" rel="noopener noreferrer">
-                  <BookOpen className="mr-2 h-4 w-4" />
-                  Read the Documentation
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </a>
+              <Button
+                render={<a href={DOCS_URL} target="_blank" rel="noopener noreferrer" />}
+                size="lg"
+                className="group bg-accent text-white hover:bg-accent/90"
+              >
+                <BookOpen className="mr-2 h-4 w-4" />
+                Read the Documentation
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Button>
-              <Button asChild variant="outline" size="lg">
-                <a href={`mailto:${CONTACT_EMAIL}`}>Contact</a>
+              <Button
+                render={<a href={`mailto:${CONTACT_EMAIL}`} />}
+                variant="outline"
+                size="lg"
+              >
+                Contact
               </Button>
             </div>
           </div>

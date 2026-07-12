@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Section } from "@/components/shared/section";
 import { Container } from "@/components/shared/container";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, useInView } from "framer-motion";
 import { easing, duration } from "@/lib/motion";
 
 const nodes = [
@@ -51,11 +51,12 @@ const connections = [
 
 export function Architecture() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: false, margin: "200px" });
   const [progress, setProgress] = useState(0);
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
-    if (reducedMotion) return;
+    if (reducedMotion || !isInView) return;
     const el = containerRef.current;
     if (!el) return;
 
@@ -73,7 +74,7 @@ export function Architecture() {
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
-  }, [reducedMotion]);
+  }, [reducedMotion, isInView]);
 
   const activeNodes = new Set<string>();
   const p = progress;
@@ -111,13 +112,13 @@ export function Architecture() {
 
           <div
             ref={containerRef}
-            className="relative mx-auto mt-12 aspect-[16/9] w-full max-w-5xl rounded-2xl border border-border-subtle bg-surface p-4 md:p-8"
+            className="relative mx-auto mt-12 w-full max-w-5xl rounded-2xl border border-border-subtle bg-surface p-4 md:p-8 overflow-x-auto h-[320px] md:h-auto md:aspect-[16/9]"
             role="img"
             aria-label="DAMS architecture diagram showing PRD atomization, Kanban, query generation, cache warming, scratchpad, Graphify dependencies, steering files, and agent-native tool interception"
           >
             <svg
               viewBox="0 0 100 90"
-              className="h-full w-full"
+              className="h-full w-full min-w-[640px] md:min-w-0"
               preserveAspectRatio="xMidYMid meet"
             >
               <defs>

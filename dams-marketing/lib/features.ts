@@ -1,6 +1,6 @@
 import {
   FileText,
-  LayoutKanban,
+  Kanban,
   Search,
   Database,
   StickyNote,
@@ -35,7 +35,7 @@ export const features: Feature[] = [
     description:
       "The DAMS Web UI renders each task as a Kanban card. Select a card to start a focused research session.",
     metric: "visual task board",
-    icon: LayoutKanban,
+    icon: Kanban,
   },
   {
     id: "generate-queries",

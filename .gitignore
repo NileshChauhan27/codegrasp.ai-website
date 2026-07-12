@@ -1,0 +1,5 @@
+.gortex/
+dams-marketing/dist/
+dams-marketing/.next/
+dams-marketing/node_modules/
+.DS_Store
