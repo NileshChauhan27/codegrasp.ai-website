@@ -114,10 +114,7 @@ const getDepthProgress = (z: number) => {
 export function Architecture() {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: false, margin: "200px" });
-  const [progress, setProgress] = useState(0);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
-  const [pinnedActive, setPinnedActive] = useState<Set<string>>(new Set());
-  const wasDragging = useRef(false);
   const reducedMotion = useReducedMotion();
 
   // Unified rotation and time updates
@@ -133,26 +130,6 @@ export function Architecture() {
   const dragStart = useRef({ x: 0, y: 0 });
   const rotationStart = useRef({ x: -0.15, y: 0.35 });
 
-  useEffect(() => {
-    if (reducedMotion || !isInView) return;
-    const el = containerRef.current;
-    if (!el) return;
-
-    const onScroll = () => {
-      const rect = el.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      const start = rect.top - windowHeight;
-      const end = rect.bottom;
-      const total = end - start;
-      const current = -start;
-      const ratio = Math.min(Math.max(current / total, 0), 1);
-      setProgress(ratio);
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [reducedMotion, isInView]);
 
   useEffect(() => {
     if (reducedMotion || !isInView) return;
@@ -196,7 +173,6 @@ export function Architecture() {
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     isDragging.current = true;
-    wasDragging.current = false;
     dragStart.current = { x: e.clientX, y: e.clientY };
     rotationStart.current = { x: targetRotation.current.x, y: targetRotation.current.y };
   };
@@ -215,9 +191,6 @@ export function Architecture() {
 
     const dx = e.clientX - dragStart.current.x;
     const dy = e.clientY - dragStart.current.y;
-    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-      wasDragging.current = true;
-    }
     const sensitivity = 0.007;
 
     targetRotation.current = {
@@ -230,40 +203,6 @@ export function Architecture() {
     isDragging.current = false;
   };
 
-  // Scroll reveal mappings
-  const handleNodeClick = (nodeId: string) => {
-    if (wasDragging.current) return;
-    setPinnedActive((prev) => {
-      const next = new Set(prev);
-      if (next.has(nodeId)) {
-        next.delete(nodeId);
-      } else {
-        next.add(nodeId);
-      }
-      return next;
-    });
-  };
-
-  // Scroll reveal mappings
-  const activeNodes = new Set<string>();
-  const p = progress;
-
-  if (p > 0.05) activeNodes.add("prd");
-  if (p > 0.1) activeNodes.add("git");
-  if (p > 0.1) activeNodes.add("wiki");
-  if (p > 0.2) activeNodes.add("compiler");
-  if (p > 0.2) activeNodes.add("atomizer");
-  if (p > 0.3) activeNodes.add("kanban");
-  if (p > 0.4) activeNodes.add("sqlite");
-  if (p > 0.45) activeNodes.add("duckdb");
-  if (p > 0.5) activeNodes.add("chunkhound");
-  if (p > 0.6) activeNodes.add("graphify");
-  if (p > 0.65) activeNodes.add("leiden");
-  if (p > 0.65) activeNodes.add("god_nodes");
-  if (p > 0.75) activeNodes.add("proxy");
-  if (p > 0.8) activeNodes.add("agent");
-  if (p > 0.85) activeNodes.add("gate");
-  if (p > 0.9) activeNodes.add("codebase");
   // Project 3D nodes
   const projectedNodes: ProjectedNode[] = nodes.map((node) => {
     const proj = project(node.x, node.y, node.z, animState.rotX, animState.rotY);
@@ -333,12 +272,10 @@ export function Architecture() {
 
               {/* 1. Connection lines (Rendered with depth cues) */}
               {sortedConnections.map((pc, index) => {
-                const fromActive = activeNodes.has(pc.fromNode.id) || pinnedActive.has(pc.fromNode.id) || hoveredNodeId === pc.fromNode.id;
-                const toActive = activeNodes.has(pc.toNode.id) || pinnedActive.has(pc.toNode.id) || hoveredNodeId === pc.toNode.id;
-                const active = (fromActive && toActive) || (hoveredNodeId === pc.fromNode.id) || (hoveredNodeId === pc.toNode.id);
+                const isAdjacent = hoveredNodeId === pc.fromNode.id || hoveredNodeId === pc.toNode.id;
                 const depth = getDepthProgress(pc.avgZ);
-                const strokeOpacity = active ? 0.05 + 0.35 * depth : 0.02;
-                const strokeWidth = active ? 0.6 + 1.2 * depth : 0.4;
+                const strokeOpacity = isAdjacent ? 0.3 + 0.5 * depth : 0.05 + 0.3 * depth;
+                const strokeWidth = isAdjacent ? 1.0 + 1.5 * depth : 0.4 + 0.8 * depth;
 
                 return (
                   <line
@@ -347,22 +284,19 @@ export function Architecture() {
                     y1={pc.fromNode.projY}
                     x2={pc.toNode.projX}
                     y2={pc.toNode.projY}
-                    stroke={active ? "url(#lineGrad3D)" : "rgba(255, 255, 255, 0.15)"}
+                    stroke="url(#lineGrad3D)"
                     strokeWidth={strokeWidth}
                     opacity={strokeOpacity}
                     strokeLinecap="round"
+                    filter={isAdjacent ? "url(#glow3D)" : undefined}
                   />
                 );
               })}
 
               {/* 2. Flowing data packets (Rendered along connection paths) */}
               {sortedConnections.map((pc, index) => {
-                const fromActive = activeNodes.has(pc.fromNode.id) || pinnedActive.has(pc.fromNode.id) || hoveredNodeId === pc.fromNode.id;
-                const toActive = activeNodes.has(pc.toNode.id) || pinnedActive.has(pc.toNode.id) || hoveredNodeId === pc.toNode.id;
-                const active = (fromActive && toActive) || (hoveredNodeId === pc.fromNode.id) || (hoveredNodeId === pc.toNode.id);
-                if (!active) return null;
-
-                const speed = 0.5 + (index % 3) * 0.25;
+                const isAdjacent = hoveredNodeId === pc.fromNode.id || hoveredNodeId === pc.toNode.id;
+                const speed = 0.4 + (index % 3) * 0.2;
                 const progressVal = (animState.time * speed) % 1;
 
                 // Linearly interpolate positions in projected space
@@ -376,9 +310,9 @@ export function Architecture() {
                     key={`packet-${index}`}
                     cx={px}
                     cy={py}
-                    r={1.8 * depth}
+                    r={(isAdjacent ? 2.5 : 1.5) * depth}
                     fill={index % 2 === 0 ? "#2d8b8b" : "#7c3aed"}
-                    opacity={0.3 + 0.7 * depth}
+                    opacity={isAdjacent ? 0.6 + 0.4 * depth : 0.15 + 0.45 * depth}
                     filter="url(#glow3D)"
                   />
                 );
@@ -386,13 +320,12 @@ export function Architecture() {
 
               {/* 3. Codebase Nodes (Rendered sorted back-to-front) */}
               {sortedNodes.map((node) => {
-                const active = activeNodes.has(node.id) || pinnedActive.has(node.id) || hoveredNodeId === node.id;
                 const depth = getDepthProgress(node.projZ);
                 const isHovered = hoveredNodeId === node.id;
 
                 const baseSize = node.type === "agent" ? 9 : node.type === "process" ? 6.5 : 5;
                 const size = baseSize * (0.65 + 0.65 * depth);
-                const nodeOpacity = active ? 0.2 + 0.8 * depth : 0.15;
+                const nodeOpacity = 0.3 + 0.7 * depth;
 
                 const color =
                   node.type === "agent"
@@ -410,29 +343,26 @@ export function Architecture() {
                     key={`node-${node.id}`}
                     onMouseEnter={() => setHoveredNodeId(node.id)}
                     onMouseLeave={() => setHoveredNodeId(null)}
-                    onClick={() => handleNodeClick(node.id)}
                     className="cursor-pointer"
                   >
-                    {/* Ring highlight when hovered or active */}
-                    {active && (
-                      <circle
-                        cx={node.projX}
-                        cy={node.projY}
-                        r={size + 3.5}
-                        stroke={color}
-                        strokeWidth={0.4}
-                        fill="none"
-                        opacity={isHovered ? 0.6 : 0.25}
-                      />
-                    )}
+                    {/* Ring highlight when hovered */}
+                    <circle
+                      cx={node.projX}
+                      cy={node.projY}
+                      r={size + 3.5}
+                      stroke={color}
+                      strokeWidth={0.4}
+                      fill="none"
+                      opacity={isHovered ? 0.7 : 0.2}
+                    />
 
                     {/* Core node circle */}
                     <circle
                       cx={node.projX}
                       cy={node.projY}
                       r={size}
-                      fill={active ? color : "#18181b"}
-                      stroke={active ? color : "rgba(255, 255, 255, 0.2)"}
+                      fill={color}
+                      stroke={color}
                       strokeWidth={0.6}
                       opacity={nodeOpacity}
                       filter={isHovered ? "url(#glow3D)" : undefined}
@@ -443,10 +373,10 @@ export function Architecture() {
                       x={node.projX}
                       y={node.projY + size + 9 + 3 * depth}
                       textAnchor="middle"
-                      fill={active ? "#f4f4f5" : "#71717a"}
+                      fill="#f4f4f5"
                       fontSize={Math.max(6.5, 5 + 4.5 * depth)}
                       fontWeight={isHovered ? "bold" : 500}
-                      opacity={isHovered ? 1.0 : active ? 0.35 + 0.65 * depth : 0.25}
+                      opacity={isHovered ? 1.0 : 0.35 + 0.65 * depth}
                       fontFamily="var(--font-geist-sans), sans-serif"
                     >
                       {node.label}
@@ -466,7 +396,7 @@ export function Architecture() {
                   Type: {nodes.find((n) => n.id === hoveredNodeId)?.type}
                 </div>
                 <div className="text-accent text-[9px] mt-1 font-mono">
-                  {activeNodes.has(hoveredNodeId) ? "● Shield Active" : "○ Pre-activation"}
+                  ● Shield Active
                 </div>
               </div>
             )}
