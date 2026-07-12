@@ -1,12 +1,15 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useReducedMotion, useInView } from "framer-motion";
 import { Section } from "@/components/shared/section";
 import { Container } from "@/components/shared/container";
 import { easing, duration } from "@/lib/motion";
 
 export function DemoVideo() {
   const reducedMotion = useReducedMotion();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, margin: "200px" });
 
   return (
     <Section id="demo" className="overflow-hidden">
@@ -42,16 +45,23 @@ export function DemoVideo() {
             aria-hidden="true"
           />
 
-          <div className="relative overflow-hidden rounded-[1.25rem] border border-border-subtle bg-surface shadow-2xl">
+          <div
+            ref={containerRef}
+            className="relative overflow-hidden rounded-[1.25rem] border border-border-subtle bg-surface shadow-2xl"
+          >
             <div className="aspect-video w-full">
-              <iframe
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1"
-                title="DAMS PRD-to-Code Demo"
-                loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="h-full w-full border-0"
-              />
+              {isInView ? (
+                <iframe
+                  src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1"
+                  title="DAMS PRD-to-Code Demo"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="h-full w-full border-0"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-surface-active text-text-tertiary" />
+              )}
             </div>
           </div>
         </motion.div>

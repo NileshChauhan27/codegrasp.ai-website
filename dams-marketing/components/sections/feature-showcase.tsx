@@ -28,13 +28,17 @@ export function FeatureShowcase() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_420px]">
-          <FeatureStage featureIndex={displayIndex} />
-          <FeatureSwitchList
-            activeIndex={activeIndex}
-            onSelect={setActiveIndex}
-            onHover={setHoveredIndex}
-          />
+        <div className="mt-12 flex flex-col gap-6 lg:grid lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_420px]">
+          <div className="order-2 lg:order-1 h-full flex flex-col">
+            <FeatureStage featureIndex={displayIndex} />
+          </div>
+          <div className="order-1 lg:order-2">
+            <FeatureSwitchList
+              activeIndex={activeIndex}
+              onSelect={setActiveIndex}
+              onHover={setHoveredIndex}
+            />
+          </div>
         </div>
       </Container>
     </Section>

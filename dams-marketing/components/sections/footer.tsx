@@ -3,7 +3,13 @@
 import { Logo } from "@/components/shared/logo";
 import { GITHUB_URL, DOCS_URL, CONTACT_EMAIL } from "@/lib/site";
 
-const footerLinks = {
+interface FooterLink {
+  label: string;
+  href: string;
+  external?: boolean;
+}
+
+const footerLinks: Record<string, FooterLink[]> = {
   Product: [
     { label: "Home", href: "#hero" },
     { label: "Features", href: "#features" },
