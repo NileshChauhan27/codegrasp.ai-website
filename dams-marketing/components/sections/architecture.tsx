@@ -150,6 +150,7 @@ export function Architecture() {
   }, [reducedMotion, isInView]);
 
   useEffect(() => {
+    if (reducedMotion || !isInView) return;
     let frameId: number;
 
     const tick = () => {
@@ -180,7 +181,7 @@ export function Architecture() {
 
     frameId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frameId);
-  }, []);
+  }, [reducedMotion, isInView]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
