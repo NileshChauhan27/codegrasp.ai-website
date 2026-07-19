@@ -1,13 +1,13 @@
 # TASK-006 — Demo Video Section
 
 ## Objective
-Build a premium YouTube embed section that visually houses the 5-minute DAMS workflow demo.
+Build a premium YouTube embed section that visually houses the 4-minute DAMS workflow demo.
 
 ## Acceptance Criteria
 - [ ] Create a `DemoVideo` section component anchored to `#demo`.
 - [ ] Render a centered container, max-width 1152 px.
 - [ ] Heading: `See DAMS run a feature from PRD to code`.
-- [ ] Subtext: `Create a project, atomize the PRD into Kanban cards, generate queries, warm the SQLite cache, and let the agent write code from a curated scratchpad while native search stays blocked. (5-minute walkthrough — full demo recording incoming.)`
+- [ ] Subtext: `Create a project, atomize the PRD into Kanban cards, generate queries, warm the SQLite cache, and let the agent write code from a curated scratchpad while native search stays blocked. (4-minute walkthrough — full demo recording incoming.)`
 - [ ] Video card:
   - Rounded 20 px.
   - Border 1 px `rgba(255,255,255,0.08)`.

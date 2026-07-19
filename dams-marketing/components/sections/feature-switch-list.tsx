@@ -31,7 +31,7 @@ export function FeatureSwitchList({
   return (
     <div
       ref={containerRef}
-      className="flex flex-row gap-2 overflow-x-auto snap-x snap-mandatory pb-4 lg:flex-col lg:overflow-x-visible lg:pb-0 scrollbar-none"
+      className="flex flex-row gap-2 overflow-x-auto snap-x snap-mandatory pb-4 pt-2 lg:flex-col lg:overflow-x-visible lg:pb-0 lg:pt-0 scrollbar-none"
       role="tablist"
       aria-label="DAMS features"
     >
@@ -52,9 +52,9 @@ export function FeatureSwitchList({
             onFocus={() => onHover(index)}
             onBlur={() => onHover(null)}
             className={cn(
-              "relative flex shrink-0 w-[280px] snap-start lg:w-auto items-center gap-3 rounded-lg border px-4 py-4 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              "relative flex shrink-0 w-[280px] snap-start lg:w-auto items-center gap-3 rounded-lg border px-4 py-4 text-left transition-all duration-200 focus-visible:outline-none focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-4 focus:ring-offset-surface active:ring-2 active:ring-accent active:ring-offset-4 active:ring-offset-surface",
               active
-                ? "border-border-hover bg-surface-active"
+                ? "border-border-hover bg-surface-active ring-2 ring-accent ring-offset-4 ring-offset-surface"
                 : "border-border-subtle bg-surface hover:border-border-hover lg:hover:translate-x-1"
             )}
           >

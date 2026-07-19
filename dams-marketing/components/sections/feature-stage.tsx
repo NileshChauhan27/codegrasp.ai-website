@@ -28,7 +28,7 @@ export function FeatureStage({ featureIndex }: FeatureStageProps) {
       id="feature-panel"
       role="tabpanel"
       aria-labelledby={`feature-tab-${featureIndex}`}
-      className="relative flex h-full min-h-[420px] flex-col justify-between overflow-hidden rounded-2xl border border-border-subtle bg-surface p-6 sm:p-8 md:p-10"
+      className="relative flex h-full min-h-[420px] flex-col justify-between rounded-2xl border border-border-subtle bg-surface p-6 sm:p-8 md:p-10 ring-2 ring-accent ring-offset-4 ring-offset-surface"
     >
       {/* Ambient radial glow */}
       <div

@@ -24,7 +24,7 @@ export function DemoVideo() {
             scratchpad while native search stays blocked.
           </p>
           <p className="mt-2 text-sm text-text-tertiary">
-            (5-minute walkthrough — full demo recording incoming.)
+            (4-minute walkthrough — full demo recording incoming.)
           </p>
         </div>
 
@@ -47,12 +47,12 @@ export function DemoVideo() {
 
           <div
             ref={containerRef}
-            className="relative overflow-hidden rounded-[1.25rem] border border-border-subtle bg-surface shadow-2xl"
+            className="relative overflow-hidden rounded-[1.25rem] border border-border-subtle bg-surface shadow-2xl ring-2 ring-accent ring-offset-4 ring-offset-surface"
           >
             <div className="aspect-video w-full">
               {isInView ? (
                 <iframe
-                  src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1"
+                  src="https://www.youtube.com/embed/YPKLZIjaayM?rel=0&modestbranding=1"
                   title="DAMS PRD-to-Code Demo"
                   loading="lazy"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

@@ -60,7 +60,7 @@ export function DeveloperFirst() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: duration.reveal, ease: easing.enter }}
-            className="rounded-2xl border border-border-subtle bg-surface p-1 shadow-2xl"
+            className="rounded-2xl border border-border-subtle bg-surface p-1 shadow-2xl ring-2 ring-accent ring-offset-4 ring-offset-surface select-none"
           >
             <div className="flex items-center gap-2 rounded-t-xl bg-surface-hover px-4 py-3">
               <span className="h-3 w-3 rounded-full bg-red-500/80" />

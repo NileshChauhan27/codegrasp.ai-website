@@ -15,11 +15,10 @@ export function CTA() {
     <Section id="cta" className="overflow-hidden">
       <Container>
         <motion.div
-          initial={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: duration.reveal, ease: easing.enter }}
-          className="relative overflow-hidden rounded-3xl border border-border-subtle bg-surface px-6 py-16 text-center md:px-12 md:py-24"
+          className="relative overflow-hidden rounded-3xl border border-border-subtle bg-surface px-6 py-16 text-center md:px-12 md:py-24 ring-2 ring-accent ring-offset-4 ring-offset-surface"
         >
           {/* Ambient glow */}
           <div

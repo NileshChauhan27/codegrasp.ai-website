@@ -37,12 +37,12 @@ export function Header() {
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Logo />
 
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Main navigation">
+        <nav className="hidden items-center gap-2 md:flex" aria-label="Main navigation">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="rounded px-3 py-2 text-sm text-text-secondary transition-colors hover:text-text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+              className="rounded-md px-3 py-1.5 text-sm font-medium tracking-wide text-text-secondary transition-all duration-200 hover:text-text-primary hover:bg-surface/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
             >
               {link.label}
             </a>
@@ -54,7 +54,7 @@ export function Header() {
             href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded border border-border-subtle bg-surface px-3 py-2 text-sm text-text-secondary transition-colors hover:border-border-hover hover:text-text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+            className="inline-flex items-center gap-2 rounded-md border border-border-subtle bg-surface/60 px-3.5 py-1.5 text-sm font-medium tracking-wide text-text-secondary transition-all duration-200 hover:border-border-hover hover:text-text-primary hover:bg-surface focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
             <Github className="h-4 w-4" />
             GitHub
@@ -97,7 +97,7 @@ export function Header() {
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className="rounded px-3 py-3 text-lg text-text-secondary transition-colors hover:bg-surface hover:text-text-primary"
+              className="rounded-md px-3 py-3 text-lg font-medium tracking-wide text-text-secondary transition-all duration-200 hover:bg-surface hover:text-text-primary"
             >
               {link.label}
             </a>
@@ -106,7 +106,7 @@ export function Header() {
             href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-flex items-center justify-center gap-2 rounded border border-border-subtle bg-surface px-3 py-3 text-lg text-text-secondary transition-colors hover:border-border-hover hover:text-text-primary"
+            className="mt-4 inline-flex items-center justify-center gap-2 rounded-md border border-border-subtle bg-surface px-3 py-3 text-lg font-medium tracking-wide text-text-secondary transition-all duration-200 hover:border-border-hover hover:text-text-primary hover:bg-surface-hover"
           >
             <Github className="h-5 w-5" />
             GitHub

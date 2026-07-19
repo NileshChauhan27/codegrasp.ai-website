@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/shared/section";
 import { Container } from "@/components/shared/container";
 import { easing, duration, stagger } from "@/lib/motion";
+import { cn } from "@/lib/utils";
 import { Check, FlaskConical, Rocket } from "lucide-react";
 
 const roadmap = [
@@ -80,11 +81,12 @@ export function ResearchLab() {
                   ease: easing.enter,
                   delay: stagger.slow * index,
                 }}
-                className={`relative rounded-2xl border bg-surface p-6 transition-all hover:-translate-y-1 ${
+                className={cn(
+                  "relative rounded-2xl border bg-surface p-6 transition-all hover:-translate-y-1 select-none ring-2 ring-accent ring-offset-4 ring-offset-surface",
                   item.active
                     ? "border-l-4 border-l-accent border-border-hover"
                     : "border-border-subtle hover:border-border-hover"
-                }`}
+                )}
               >
                 <div className="flex items-center justify-between">
                   <span
