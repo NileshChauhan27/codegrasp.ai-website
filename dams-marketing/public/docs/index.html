@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DAMS — Defensive Agentic Memory System · Docs</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand"><span class="dot"></span> DAMS</div>
+    <div class="tag">Defensive Agentic Memory System · v2.3</div>
+    <nav>
+      <a href="index.html" class="active">Overview &amp; Quick Start</a>
+      <a href="architecture.html">Architecture</a>
+      <a href="concepts.html">Core Concepts</a>
+      <a href="cli.html">CLI Reference</a>
+      <a href="mcp.html">MCP API</a>
+      <a href="security.html">Local Sovereignty &amp; Security</a>
+      <a href="faq.html">FAQ</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <span class="badge">v2.3 · Production-ready</span>
+    <h1>DAMS Documentation</h1>
+    <p class="lead">
+      DAMS (Defensive Agentic Memory System) is a local-first memory, safety, and
+      retrieval layer for AI coding agents. It gives autonomous and vibe-coding
+      workflows persistent context, structural code intelligence, and pre-commit
+      guardrails — so agents write features without re-reading the codebase and
+      without repeating past bugs.
+    </p>
+
+    <h2>Why DAMS exists</h2>
+    <p>
+      As AI-assisted coding scales from autocomplete to autonomous agents (Cline,
+      Claude Code, Aider, OpenCode), teams hit the <strong>agentic context cliff</strong>:
+      agents write code they do not understand, overwrite schemas, skip tests, ignore
+      prior decisions, and hit hard context-window limits. Every session starts from zero.
+    </p>
+    <p>
+      DAMS wraps the local dev environment in an <strong>active memory shell</strong>. It
+      coordinates what was decided, what is changing, how the code is structured, and how
+      to verify correctness — combining a git-versioned Markdown wiki, a local SQLite
+      ledger, AST dependency graphs, and OS-level interception. The result: the agent
+      always operates with exactly the context it needs, and nothing more.
+    </p>
+
+    <h2>What you get</h2>
+    <ul>
+      <li><strong>Compiled context, not retrieved context</strong> — a freshness-scored steering file (default <code>DAMS.md</code>) distilled from a 3-layer token budget.</li>
+      <li><strong>Structural code intelligence</strong> — Graphify knowledge graphs (Leiden community clustering) and tree-sitter call graphs for ripple detection.</li>
+      <li><strong>Hybrid retrieval</strong> — Chunkhound cAST chunking + semantic/regex hybrid search + a local Ollama reranker, all on-device.</li>
+      <li><strong>Defensive guardrails</strong> — a Safety Gate blocks contract violations before commit; regression traps prevent recurred bugs.</li>
+      <li><strong>Agent interoperability</strong> — a Model Context Protocol (MCP) server and OS-level shims that route native search tools through DAMS context.</li>
+      <li><strong>Local sovereignty</strong> — embeddings, reranking, and research run on your GPU. No source code leaves the machine.</li>
+    </ul>
+
+    <h2>Quick Start</h2>
+    <h3>1. Install</h3>
+    <pre><code># System deps + Python toolchain
+sudo apt update &amp;&amp; sudo apt install -y cmake pkg-config libssl-dev libsqlite3-dev libclang-dev clang build-essential
+curl -LsSf https://astral.sh/uv/install.sh | sh
+curl -fsSL https://fnm.vercel.app/install | bash &amp;&amp; fnm install 22
+
+# Ollama (local embeddings + reranker)
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull qwen3-embedding:8b
+ollama pull dengcao/Qwen3-Reranker-8B:Q5_K_M</code></pre>
+
+    <h3>2. Initialize a project</h3>
+    <pre><code>git init
+dams init                 # creates .dams/, SQLite ledger, git hooks
+dams atomize prd.md       # decompose PRD into an atomized task tree
+dams graphify             # build knowledge graph (~2k vs ~123k tokens)
+dams recompile            # compile wiki -&gt; DAMS.md steering file</code></pre>
+
+    <h3>3. Wire up your agent</h3>
+    <pre><code>dams configure-agents .   # installs OS-level shims + steering rules for
+                         # OpenCode, Cline, Claude Code, Cursor, Continue, Kilo</code></pre>
+
+    <h3>4. Develop with guardrails</h3>
+    <pre><code>dams next TASK-001        # activate a task (warms cache in background)
+# ... agent reads DAMS.md and uses DAMS MCP tools ...
+git commit -m "feat: add auth [TASK-001]"   # pre-commit runs `dams check`
+dams task-done TASK-001
+dams end "bootstrapped auth"</code></pre>
+
+    <div class="callout">
+      DAMS is fully dockerized. The recommended runtime is the included
+      <code>.devcontainer</code> — a single <code>docker compose up</code> gives you the
+      Python backend, Vite/React UI, Node toolchain, and Ollama client with zero host setup.
+    </div>
+
+    <h2>Next steps</h2>
+    <ul>
+      <li>Understand the <a href="architecture.html">system architecture</a>.</li>
+      <li>Learn the <a href="concepts.html">core concepts</a> (wiki, compiler, safety gate).</li>
+      <li>Browse the <a href="cli.html">CLI reference</a> or the <a href="mcp.html">MCP API</a>.</li>
+    </ul>
+
+    <div class="footer">
+      DAMS v2.3 — Defensive Agentic Memory System. Local-first. Open tooling. No source leaves your machine.
+    </div>
+  </main>
+</div>
+</body>
+</html>

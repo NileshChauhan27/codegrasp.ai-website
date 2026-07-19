@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ · DAMS Docs</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand"><span class="dot"></span> DAMS</div>
+    <div class="tag">Defensive Agentic Memory System · v2.3</div>
+    <nav>
+      <a href="index.html">Overview &amp; Quick Start</a>
+      <a href="architecture.html">Architecture</a>
+      <a href="concepts.html">Core Concepts</a>
+      <a href="cli.html">CLI Reference</a>
+      <a href="mcp.html">MCP API</a>
+      <a href="security.html">Local Sovereignty &amp; Security</a>
+      <a href="faq.html" class="active">FAQ</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <h1>Frequently Asked Questions</h1>
+
+    <h3>Which coding agents does DAMS support?</h3>
+    <p>
+      OpenCode, Cline, Claude Code, Cursor, Continue.dev, Kilo Code, Antigravity CLI/GUI, and any
+      tool that reads a Markdown steering file (e.g., <code>DAMS.md</code>, <code>AGENTS.md</code>,
+      <code>CBM.md</code>). <code>dams configure-agents .</code> installs OS shims and steering rules
+      for all of them.
+    </p>
+
+    <h3>Do I need a GPU?</h3>
+    <p>
+      A GPU accelerates local embeddings and reranking, but DAMS also supports cloud LLM
+      providers (OpenAI-compatible) for Chunkhound Code Research. The knowledge graph builds from
+      Tree-sitter AST alone (<code>--code-only</code>) with no LLM and no GPU.
+    </p>
+
+    <h3>Is my code sent to the cloud?</h3>
+    <p>
+      No, by default. Indexing, embeddings, reranking, and research run locally on Ollama. Cloud
+      use is opt-in and limited to the LLM provider you configure for research synthesis.
+    </p>
+
+    <h3>What if Graphify needs an API key?</h3>
+    <p>
+      Full semantic extraction needs an LLM key, but <code>--code-only</code> mode uses Tree-sitter
+      only and still delivers the 71.5× token reduction on subgraph queries. The OpenAI backend is
+      patched to honor <code>OPENAI_BASE_URL</code> / <code>GRAPHIFY_OPENAI_MODEL</code>, so any
+      OpenAI-compatible gateway (NanoGPT, LMStudio, OpenRouter, MiniMax) works.
+    </p>
+
+    <h3>How are tasks tracked?</h3>
+    <p>
+      Tasks are Markdown files in <code>.dams/context/tasks/</code> plus a machine-readable
+      <code>_registry.yaml</code> and a SQLite ledger. A <code>[TASK-ID]</code> in a commit message
+      auto-marks the task complete via the post-commit hook.
+    </p>
+
+    <h3>Can multiple developers share context?</h3>
+    <p>
+      Yes. Steering configurations and <code>graphify-out/</code> outputs are git-synchronized;
+      <code>dams sync-push</code> / <code>sync-pull</code> handle multi-machine sync, and
+      <code>export-context</code> / <code>import-context</code> support cross-project sharing.
+    </p>
+
+    <h3>How do I run DAMS?</h3>
+    <p>
+      The recommended runtime is the included <code>.devcontainer</code> (a single
+      <code>docker compose up</code>). Inside it, <code>dams ui</code> starts both the FastAPI
+      backend (8765) and Vite UI (5174).
+    </p>
+
+    <h3>What's the project status?</h3>
+    <p>
+      DAMS v2.3 is finalized — all core components and iterative tooling (Phases 1–8) are complete
+      and production-ready.
+    </p>
+
+    <div class="footer">DAMS v2.3 — FAQ. Start with <a href="index.html">Overview &amp; Quick Start</a>.</div>
+  </main>
+</div>
+</body>
+</html>

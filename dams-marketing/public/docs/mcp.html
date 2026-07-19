@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MCP API · DAMS Docs</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand"><span class="dot"></span> DAMS</div>
+    <div class="tag">Defensive Agentic Memory System · v2.3</div>
+    <nav>
+      <a href="index.html">Overview &amp; Quick Start</a>
+      <a href="architecture.html">Architecture</a>
+      <a href="concepts.html">Core Concepts</a>
+      <a href="cli.html">CLI Reference</a>
+      <a href="mcp.html" class="active">MCP API</a>
+      <a href="security.html">Local Sovereignty &amp; Security</a>
+      <a href="faq.html">FAQ</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <h1>Model Context Protocol (MCP) API</h1>
+    <p class="lead">
+      The DAMS MCP server (<code>dams mcp</code>, stdio) exposes code search, the SQLite cache,
+      and Graphify path retrieval directly to LLM agents — so they use structured tools instead
+      of raw filesystem scans.
+    </p>
+
+    <h2>Starting the server</h2>
+    <pre><code>dams mcp
+# registers in client IDE configs (Cline, Claude Code, Cursor, Continue) via:
+dams configure-agents .</code></pre>
+
+    <h2>Tools</h2>
+    <table>
+      <thead><tr><th>Tool</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>search</code></td><td>Hybrid semantic + regex code search (Chunkhound cAST chunks)</td></tr>
+        <tr><td><code>search_structural</code></td><td>GritQL structural pattern search / match</td></tr>
+        <tr><td><code>ripple</code></td><td>Reverse call graph: what depends on a symbol</td></tr>
+        <tr><td><code>graph_query</code></td><td>Graphify BFS subgraph query (token-efficient)</td></tr>
+        <tr><td><code>read_cache</code></td><td>Read entries from the SQLite active-code cache</td></tr>
+        <tr><td><code>query_graph</code></td><td>Graph-first lookup (paired with <code>graphify-out/graph.json</code>)</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Example: query_graph</h2>
+    <pre><code>{
+  "tool": "graph_query",
+  "arguments": { "query": "how does auth flow work", "depth": 2 }
+}
+// returns a ~2k-token subgraph (vs ~123k naive dump)</code></pre>
+
+    <h2>MCP Interception Proxy</h2>
+    <p>
+      Beyond its own tools, DAMS ships a <strong>protocol-level MCP Interception Proxy</strong>
+      that wraps any underlying MCP server. When shims are active, native tool calls
+      (<code>grep_search</code>, <code>view_file</code>, <code>list_dir</code>) are intercepted and
+      routed to the DAMS context dispatcher, returning rich Graphify/Chunkhound context instead
+      of bare tool output.
+    </p>
+
+    <h2>Agent steering invariant</h2>
+    <p>For every configured agent, DAMS injects these rules:</p>
+    <ul>
+      <li><strong>Query-First</strong> — if <code>graphify-out/graph.json</code> exists, run <code>graphify query</code> (or <code>query_graph</code>) before grepping.</li>
+      <li><strong>Context-Aware Scoping</strong> — use <code>graphify path</code> / <code>explain</code> for relationships and focused symbols.</li>
+      <li><strong>AST Update Routine</strong> — after editing files, run <code>graphify update .</code> (AST-only, zero token cost).</li>
+    </ul>
+
+    <div class="footer">DAMS v2.3 — MCP API. See <a href="architecture.html">Architecture</a> for the dispatcher tiers.</div>
+  </main>
+</div>
+</body>
+</html>

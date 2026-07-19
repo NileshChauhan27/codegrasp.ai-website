@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLI Reference · DAMS Docs</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand"><span class="dot"></span> DAMS</div>
+    <div class="tag">Defensive Agentic Memory System · v2.3</div>
+    <nav>
+      <a href="index.html">Overview &amp; Quick Start</a>
+      <a href="architecture.html">Architecture</a>
+      <a href="concepts.html">Core Concepts</a>
+      <a href="cli.html" class="active">CLI Reference</a>
+      <a href="mcp.html">MCP API</a>
+      <a href="security.html">Local Sovereignty &amp; Security</a>
+      <a href="faq.html">FAQ</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <h1>CLI Reference</h1>
+    <p class="lead">The <code>dams</code> CLI orchestrates the full lifecycle: init, capture, compile, verify, discover, and automate.</p>
+
+    <h2>Project lifecycle</h2>
+    <table>
+      <thead><tr><th>Command</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>dams new &lt;name&gt; --lang python --from-prd prd.md</code></td><td>Create project, atomize PRD, init DAMS</td></tr>
+        <tr><td><code>dams init</code></td><td>Initialize DAMS in an existing project (prompts for steering file name)</td></tr>
+        <tr><td><code>dams atomize &lt;prd&gt; --clear</code></td><td>AI PRD decomposition (tasks + schema design)</td></tr>
+        <tr><td><code>dams recompile</code></td><td>Compile wiki → steering file with freshness score</td></tr>
+        <tr><td><code>dams end "notes"</code></td><td>Log session, regenerate steering file</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Knowledge capture</h2>
+    <table>
+      <thead><tr><th>Command</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>dams decide "Title" --files X,Y --why "..."</code></td><td>Create a decision (ADR)</td></tr>
+        <tr><td><code>dams contract "Rule" --files X --severity critical</code></td><td>Add a safety contract</td></tr>
+        <tr><td><code>dams trap "Cause" --fix "..." --file X --test path</code></td><td>Create a regression trap</td></tr>
+        <tr><td><code>dams issue "Desc" --severity high</code></td><td>Log an active issue</td></tr>
+        <tr><td><code>dams next "Task" --ref TASK-ID</code></td><td>Set next priority (warms cache)</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Task management</h2>
+    <table>
+      <thead><tr><th>Command</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>dams tasks [--status pending] [--priority high]</code></td><td>Show task tree, filterable</td></tr>
+        <tr><td><code>dams task &lt;id&gt;</code></td><td>Full task details</td></tr>
+        <tr><td><code>dams task-execute &lt;id&gt; --copy</code></td><td>Extract/copy agent execution prompt</td></tr>
+        <tr><td><code>dams task-done &lt;id&gt;</code></td><td>Mark complete (or auto from commit)</td></tr>
+        <tr><td><code>dams task-generate "Feature"</code></td><td>LLM-generate a new task</td></tr>
+        <tr><td><code>dams import-tasks &lt;file.json&gt;</code></td><td>Offline import tasks from Web UI JSON</td></tr>
+        <tr><td><code>dams status</code></td><td>One-glance project progress</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Verification</h2>
+    <table>
+      <thead><tr><th>Command</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>dams check</code></td><td>Safety gate against tracked files (pre-commit)</td></tr>
+        <tr><td><code>dams check --fix</code></td><td>Auto-heal structural violations via GritQL</td></tr>
+        <tr><td><code>dams doctor</code></td><td>Drift detection (orphans, staleness, contradictions)</td></tr>
+        <tr><td><code>dams dsl-validate|dsl-compile &lt;file&gt;</code></td><td>Validate/compile Safety DSL → GritQL</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Discovery</h2>
+    <table>
+      <thead><tr><th>Command</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>dams index [--watch]</code></td><td>Full / continuous Chunkhound index</td></tr>
+        <tr><td><code>dams search "q" --hybrid|--semantic|--regex</code></td><td>Hybrid / semantic / regex search</td></tr>
+        <tr><td><code>dams ripple &lt;function&gt;</code></td><td>What calls this? (Graphify/CodeGraph)</td></tr>
+        <tr><td><code>dams callers &lt;file&gt;</code></td><td>Who imports/calls this file?</td></tr>
+        <tr><td><code>dams graphify [build|--query|--explain]</code></td><td>Knowledge graph operations</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Automation &amp; ops</h2>
+    <table>
+      <thead><tr><th>Command</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>scripts/dams-auto.sh TASK-020</code></td><td>End-to-end task automation loop (prep→branch→code→test→merge)</td></tr>
+        <tr><td><code>dams sync-push|sync-pull &lt;remote&gt;</code></td><td>Multi-machine context sync</td></tr>
+        <tr><td><code>dams export-context|import-context</code></td><td>Cross-project context sharing</td></tr>
+        <tr><td><code>dams health|hot|prune|config</code></td><td>Stack health, hot files, cleanup, config</td></tr>
+        <tr><td><code>dams plugin-*|skill-*|docs-*</code></td><td>Plugins, skills, doc fetching</td></tr>
+        <tr><td><code>dams mcp</code></td><td>Start the DAMS MCP server (stdio)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="footer">DAMS v2.3 — CLI Reference. See <a href="mcp.html">MCP API</a> for agent-exposed tools.</div>
+  </main>
+</div>
+</body>
+</html>

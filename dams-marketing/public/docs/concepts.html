@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Core Concepts · DAMS Docs</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand"><span class="dot"></span> DAMS</div>
+    <div class="tag">Defensive Agentic Memory System · v2.3</div>
+    <nav>
+      <a href="index.html">Overview &amp; Quick Start</a>
+      <a href="architecture.html">Architecture</a>
+      <a href="concepts.html" class="active">Core Concepts</a>
+      <a href="cli.html">CLI Reference</a>
+      <a href="mcp.html">MCP API</a>
+      <a href="security.html">Local Sovereignty &amp; Security</a>
+      <a href="faq.html">FAQ</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <h1>Core Concepts</h1>
+    <p class="lead">
+      DAMS models a project as a git-versioned Markdown wiki plus a local SQLite ledger.
+      The wiki is the single source of truth; the compiler turns it into a compact steering file.
+    </p>
+
+    <h2>Context Wiki (<code>.dams/context/</code>)</h2>
+    <p>
+      A directory of structured Markdown files — decisions, contracts, traps, tasks, and
+      sessions — that is Obsidian-compatible and git-versioned. Key subfolders:
+    </p>
+    <ul>
+      <li><code>decisions/</code> — architecture decision records (ADRs).</li>
+      <li><code>contracts/</code> — safety contracts enforced by the Safety Gate.</li>
+      <li><code>traps/</code> — regression traps auto-extracted from <code>fix:</code> commits.</li>
+      <li><code>tasks/</code> — atomized task tree + <code>_registry.yaml</code>.</li>
+      <li><code>active/</code> — <code>broken.md</code>, <code>next.md</code>, <code>codeResearch.md</code> scratchpad.</li>
+      <li><code>sessions/</code> — auto-generated session logs.</li>
+      <li><code>skills/</code> — reusable <code>SKILL.md</code> workflows.</li>
+    </ul>
+
+    <h2>Context Compiler (3-layer token budget)</h2>
+    <p>
+      The compiler reads the wiki and produces a freshness-scored steering file (default
+      <code>DAMS.md</code>) targeting an 8K token budget:
+    </p>
+    <table>
+      <thead><tr><th>Layer</th><th>Content</th><th>Included when</th></tr></thead>
+      <tbody>
+        <tr><td>L1 — Never Drop</td><td>Active issues, safety-critical contracts, immediate priorities</td><td>Always</td></tr>
+        <tr><td>L2 — High Priority</td><td>Last 5 decisions, critical traps, pending PRD deps</td><td>&gt;2K tokens remaining</td></tr>
+        <tr><td>L3 — Fill</td><td>Completed decisions (summarized), conventions, old logs</td><td>&gt;5K tokens remaining</td></tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>Freshness score</strong> (0.0–1.0) = 0.5·Recency + 0.3·Drift + 0.2·Age. Below 0.8 the
+      agent is told to recompile; below 0.5 context is treated as potentially stale. Token
+      counting uses <code>tiktoken</code> (cl100k_base).
+    </p>
+
+    <h2>Safety Gate (<code>dams check</code>)</h2>
+    <ul>
+      <li><strong>String-level</strong> — keyword scan against each contract.</li>
+      <li><strong>GritQL structural</strong> — AST-level enforcement via <code>.dams/patterns/*.grit</code>.</li>
+      <li><strong>Modes</strong> — <code>block</code> (reject), <code>warn</code>, <code>off</code>.</li>
+      <li><strong>Auto-healing</strong> — <code>--fix</code> invokes GritQL to rewrite violations in place.</li>
+    </ul>
+
+    <h2>Drift Detection (<code>dams doctor</code>)</h2>
+    <table>
+      <thead><tr><th>Detection</th><th>Severity</th></tr></thead>
+      <tbody>
+        <tr><td>Wiki references a deleted file</td><td>warning</td></tr>
+        <tr><td>Task marked done but tests fail</td><td>warning</td></tr>
+        <tr><td>Stale issue (&gt;30 days)</td><td>info</td></tr>
+        <tr><td>Contradictory contracts</td><td>error</td></tr>
+        <tr><td>Decision superseded but still referenced</td><td>info</td></tr>
+      </tbody>
+    </table>
+
+    <h2>CodeGraph &amp; Graphify</h2>
+    <p>
+      <strong>Graphify</strong> (preferred) is a multi-modal knowledge graph (Tree-sitter AST +
+      optional LLM semantic extraction) with Leiden community clustering. It identifies
+      high-degree "god nodes" and surprising cross-file connections. <strong>CodeGraph</strong>
+      is the fast tree-sitter fallback call graph for ripple detection when Graphify is
+      unavailable. Both feed AGENTS.md in ~200 tokens versus ~123k reading every file.
+    </p>
+
+    <h2>Code Research (Chunkhound)</h2>
+    <p>
+      Chunkhound's orchestrated BFS sub-agent explores code relationships dynamically at
+      query time — virtual Graph RAG without precomputed graph storage. It uses cAST
+      chunking (structure-aware, 4.3pt retrieval gain), hybrid semantic+regex search, and a
+      local Ollama reranker. Results land in the <code>codeResearch.md</code> scratchpad.
+    </p>
+
+    <h2>Atomized Tasks</h2>
+    <p>
+      A single granular unit of work (e.g., "create users table"), auto-generated from the PRD
+      by pure LLM reasoning; the AI implicitly designs the schema and task hierarchy together.
+      Tasks carry frontmatter with status, priority, dependencies, files, and linked commits.
+    </p>
+
+    <div class="footer">DAMS v2.3 — Core Concepts. See <a href="cli.html">CLI Reference</a> for command details.</div>
+  </main>
+</div>
+</body>
+</html>

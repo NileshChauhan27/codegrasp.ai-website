@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Architecture · DAMS Docs</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand"><span class="dot"></span> DAMS</div>
+    <div class="tag">Defensive Agentic Memory System · v2.3</div>
+    <nav>
+      <a href="index.html">Overview &amp; Quick Start</a>
+      <a href="architecture.html" class="active">Architecture</a>
+      <a href="concepts.html">Core Concepts</a>
+      <a href="cli.html">CLI Reference</a>
+      <a href="mcp.html">MCP API</a>
+      <a href="security.html">Local Sovereignty &amp; Security</a>
+      <a href="faq.html">FAQ</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <h1>System Architecture</h1>
+    <p class="lead">
+      DAMS is organized into three cooperating layers — Memory, Intelligence, and
+      Discovery — plus a tool-binding surface (OS shims + MCP) that keeps agents on the
+      context fast path.
+    </p>
+
+    <h2>Layer overview</h2>
+    <table>
+      <thead><tr><th>Layer</th><th>Components</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Memory</strong></td><td>Context Wiki, Context Compiler, DAMS CLI, SKILL.md</td><td>What was decided, what's broken, what's next</td></tr>
+        <tr><td><strong>Intelligence</strong></td><td>Safety Gate, Drift Detection, CodeGraph, LSP-MCP, GitHub/GitLab MCP, Git Context</td><td>Validate, navigate, prevent</td></tr>
+        <tr><td><strong>Discovery</strong></td><td>Chunkhound, cAST chunking, Ollama embeddings + reranker, DuckDB, post-retrieval pruner</td><td>Find relevant code by concept</td></tr>
+      </tbody>
+    </table>
+
+    <h2>The 5-Tier Dispatcher Pipeline</h2>
+    <p>
+      The context dispatcher (<code>context_dispatcher.py</code>) routes search queries through a
+      cascade so common, high-signal lookups never touch the vector DB:
+    </p>
+    <table>
+      <thead><tr><th>Tier</th><th>Mechanism</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>0 — AST Fast-Path</td><td>Regex match for CamelCase/PascalCase/snake_case identifiers → Graphify AST</td><td>Instant symbol lookup, bypasses vector DB</td></tr>
+        <tr><td>1 — SQLite FTS5</td><td>Full-text search over <code>symbol_index</code></td><td>Exact method/class/attr in &lt;50ms</td></tr>
+        <tr><td>2 — Graphify→Chunkhound</td><td>Trace symbol in dependency graph, fetch adjacent lines via Chunkhound</td><td>Architecturally aware retrieval</td></tr>
+        <tr><td>3 — Semantic RAG</td><td>Natural-language query → embeddings → DuckDB cosine similarity</td><td>Concept search</td></tr>
+        <tr><td>4 — Grep/Ripgrep</td><td>Subprocess passthrough</td><td>Zero-failure terminal fallback</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Graphify-First retrieval</h2>
+    <p>
+      DAMS grounds search in the knowledge graph before touching Chunkhound. For a selected
+      task, it (1) queries Graphify for a topological subgraph, (2) injects that structure into
+      query generation, (3) resolves real node names via Graphify, then (4) runs targeted
+      Chunkhound retrieval into a scratchpad (<code>codeResearch.md</code>). BFS subgraph queries
+      achieve a <strong>71.5× token reduction</strong> versus naive file dumps.
+    </p>
+
+    <h2>Tool-binding surface</h2>
+    <p>Two complementary mechanisms keep agents off brute-force scanning:</p>
+    <ul>
+      <li><strong>OS-level shims</strong> — thin bash wrappers for <code>grep</code>, <code>rg</code>, <code>find</code>, <code>fd</code>, <code>sg</code> that intercept calls, check <code>~/.dams_shims_enabled</code>, route to the dispatcher, and log.</li>
+      <li><strong>MCP Interception Proxy</strong> — a protocol-level proxy that wraps any underlying MCP server and catches native tool calls (<code>grep_search</code>, <code>view_file</code>, <code>list_dir</code>), returning rich Graphify/Chunkhound context.</li>
+    </ul>
+
+    <h2>Deployment topology</h2>
+    <table>
+      <thead><tr><th>Service</th><th>In container</th><th>On host</th></tr></thead>
+      <tbody>
+        <tr><td>Vite / React UI</td><td>5174</td><td>5174</td></tr>
+        <tr><td>FastAPI backend</td><td>8765</td><td>8765</td></tr>
+        <tr><td>Ollama</td><td>11434</td><td>11435</td></tr>
+      </tbody>
+    </table>
+    <p>
+      The backend default port is <code>8765</code> (not 8000) to avoid colliding with Portainer;
+      the Vite dev server is pinned to <code>5174</code> with <code>strictPort: true</code>.
+    </p>
+
+    <div class="footer">DAMS v2.3 — Architecture. See <a href="concepts.html">Core Concepts</a> for the data model.</div>
+  </main>
+</div>
+</body>
+</html>

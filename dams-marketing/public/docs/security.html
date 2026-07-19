@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Local Sovereignty &amp; Security · DAMS Docs</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand"><span class="dot"></span> DAMS</div>
+    <div class="tag">Defensive Agentic Memory System · v2.3</div>
+    <nav>
+      <a href="index.html">Overview &amp; Quick Start</a>
+      <a href="architecture.html">Architecture</a>
+      <a href="concepts.html">Core Concepts</a>
+      <a href="cli.html">CLI Reference</a>
+      <a href="mcp.html">MCP API</a>
+      <a href="security.html" class="active">Local Sovereignty &amp; Security</a>
+      <a href="faq.html">FAQ</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <h1>Local Sovereignty &amp; Security</h1>
+    <p class="lead">
+      DAMS is built on a local-sovereignty principle: your source code, embeddings, and
+      reasoning never leave the machine unless you explicitly opt in.
+    </p>
+
+    <h2>What stays on-device</h2>
+    <ul>
+      <li><strong>Source code</strong> — indexed locally by Chunkhound; never uploaded.</li>
+      <li><strong>Embeddings</strong> — <code>qwen3-embedding:8b</code> runs on Ollama (GPU).</li>
+      <li><strong>Reranking</strong> — <code>Qwen3-Reranker-8B:Q5_K_M</code> runs on Ollama (~5 GB VRAM).</li>
+      <li><strong>Knowledge graph</strong> — Graphify builds entirely from local Tree-sitter parsing.</li>
+      <li><strong>Memory</strong> — the wiki and SQLite ledger live in <code>.dams/</code> inside your repo.</li>
+    </ul>
+
+    <h2>VRAM budget (RTX 4090 / 16 GB)</h2>
+    <table>
+      <thead><tr><th>Model</th><th>VRAM</th></tr></thead>
+      <tbody>
+        <tr><td>qwen3-embedding:8b</td><td>~2.5 GB</td></tr>
+        <tr><td>Qwen3-Reranker-8B:Q5_K_M</td><td>~5 GB</td></tr>
+        <tr><td><strong>Total</strong></td><td><strong>~7.5 GB available of 16 GB</strong></td></tr>
+      </tbody>
+    </table>
+    <p>No Docker, no TEI container — both models run natively on Ollama.</p>
+
+    <h2>Defensive guardrails</h2>
+    <ul>
+      <li><strong>Safety Gate</strong> — pre-commit hook runs <code>dams check</code>; critical violations block the commit. <code>--fix</code> auto-heals via GritQL.</li>
+      <li><strong>Secret scan</strong> — the pre-commit hook scans the wiki and steering file for API keys, passwords, and tokens.</li>
+      <li><strong>Regression traps</strong> — auto-extracted from <code>fix:</code> commits; injected into context to prevent recurrence.</li>
+      <li><strong>OS-level interception</strong> — shims and the MCP proxy redirect brute-force scans to curated context, reducing agent mistake surface.</li>
+    </ul>
+
+    <h2>Opt-in telemetry</h2>
+    <p>
+      Error telemetry via <code>sentry-sdk</code> → GlitchTip is <strong>strictly opt-in</strong>.
+      Enable by setting <code>GLITCHTIP_DSN</code> in the environment or <code>.dams/config.yaml</code>.
+      Uptime monitoring (Uptime Kuma) watches <code>/api/health</code> and is also opt-in via the
+      monitoring compose file. Neither is required to use DAMS.
+    </p>
+
+    <h2>Data isolation</h2>
+    <p>
+      The dev container isolates the project root, <code>.dams/</code>, the SQLite ledger, the
+      Graphify cache, and the Ollama socket — nothing leaks into the host beyond the mounted
+      workspace. Multi-machine sync uses <code>rsync</code> (or local transfer) with merge/overwrite
+      semantics you control.
+    </p>
+
+    <div class="footer">DAMS v2.3 — Local Sovereignty &amp; Security. See <a href="faq.html">FAQ</a> for deployment options.</div>
+  </main>
+</div>
+</body>
+</html>
