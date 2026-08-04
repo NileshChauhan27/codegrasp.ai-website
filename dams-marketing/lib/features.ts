@@ -31,9 +31,9 @@ export const features: Feature[] = [
   },
   {
     id: "kanban-dashboard",
-    title: "Kanban Task Dashboard",
+    title: "Interactive Task Dashboard",
     description:
-      "The DAMS Web UI renders each task as a Kanban card. Select a card to start a focused research session.",
+      "The DAMS Web UI renders each task as a card. Select a card to start a focused research session.",
     metric: "visual task board",
     icon: Kanban,
   },

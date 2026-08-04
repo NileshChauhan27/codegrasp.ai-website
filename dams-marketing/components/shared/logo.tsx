@@ -12,15 +12,15 @@ export function Logo({ className, showWordmark = true }: LogoProps) {
     <a href="#hero" className={`flex items-center gap-2 ${className || ""}`}>
       <Image
         src="/logo-mark.svg"
-        alt="DAMS"
+        alt="CodeGrasp"
         width={32}
         height={32}
-        className="h-8 w-auto"
+        className="shrink-0"
         priority
       />
       {showWordmark && (
         <span className="text-lg font-semibold tracking-tight text-text-primary">
-          DAMS
+          CodeGrasp
         </span>
       )}
     </a>

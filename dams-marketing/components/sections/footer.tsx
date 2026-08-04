@@ -1,7 +1,8 @@
 "use client";
 
 import { Logo } from "@/components/shared/logo";
-import { GITHUB_URL, DOCS_URL, CONTACT_EMAIL } from "@/lib/site";
+import { GITHUB_URL, DOCS_URL, LINKEDIN_URL } from "@/lib/site";
+import { Github, Linkedin } from "@/components/shared/icons";
 
 interface FooterLink {
   label: string;
@@ -22,7 +23,7 @@ const footerLinks: Record<string, FooterLink[]> = {
     { label: "Demo", href: "#demo" },
   ],
   Connect: [
-    { label: "Contact", href: `mailto:${CONTACT_EMAIL}` },
+    { label: "Contact", href: LINKEDIN_URL, external: true },
   ],
 };
 
@@ -36,6 +37,26 @@ export function Footer() {
             <p className="mt-4 text-sm text-text-tertiary">
               Defensive Agentic Memory System for AI coding agents.
             </p>
+            <div className="mt-5 flex items-center gap-3">
+              <a
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-text-tertiary hover:text-text-primary transition-colors duration-200"
+                aria-label="GitHub Repository"
+              >
+                <Github className="h-5 w-5" />
+              </a>
+              <a
+                href={LINKEDIN_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-text-tertiary hover:text-text-primary transition-colors duration-200"
+                aria-label="LinkedIn Profile"
+              >
+                <Linkedin className="h-5 w-5" />
+              </a>
+            </div>
           </div>
 
           {Object.entries(footerLinks).map(([category, links]) => (

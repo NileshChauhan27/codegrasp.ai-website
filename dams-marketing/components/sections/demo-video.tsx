@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useState, useRef } from "react";
 import { motion, useReducedMotion, useInView } from "framer-motion";
 import { Section } from "@/components/shared/section";
 import { Container } from "@/components/shared/container";
@@ -8,8 +8,8 @@ import { easing, duration } from "@/lib/motion";
 
 export function DemoVideo() {
   const reducedMotion = useReducedMotion();
+  const [isPlaying, setIsPlaying] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(containerRef, { once: true, margin: "200px" });
 
   return (
     <Section id="demo" className="overflow-hidden">
@@ -19,7 +19,7 @@ export function DemoVideo() {
             See DAMS run a feature from PRD to code
           </h2>
           <p className="mt-4 text-text-secondary">
-            Create a project, atomize the PRD into Kanban cards, generate queries,
+            Create a project, atomize the PRD into task cards, generate queries,
             warm the SQLite cache, and let the agent write code from a curated
             scratchpad while native search stays blocked.
           </p>
@@ -50,17 +50,31 @@ export function DemoVideo() {
             className="relative overflow-hidden rounded-[1.25rem] border border-border-subtle bg-surface shadow-2xl ring-2 ring-accent ring-offset-4 ring-offset-surface"
           >
             <div className="aspect-video w-full">
-              {isInView ? (
+              {isPlaying ? (
                 <iframe
-                  src="https://www.youtube.com/embed/YPKLZIjaayM?rel=0&modestbranding=1"
+                  src="https://www.youtube.com/embed/YPKLZIjaayM?autoplay=1&rel=0&modestbranding=1"
                   title="DAMS PRD-to-Code Demo"
-                  loading="lazy"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   className="h-full w-full border-0"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-surface-active text-text-tertiary" />
+                <div
+                  onClick={() => setIsPlaying(true)}
+                  className="group relative flex h-full w-full cursor-pointer items-center justify-center overflow-hidden bg-[#131517] select-none"
+                >
+                  <img
+                    src="/features/kanban-dashboard.webp"
+                    alt="DAMS PRD-to-Code Demo Preview"
+                    className="absolute inset-0 h-full w-full object-cover opacity-60 transition-all duration-500 group-hover:scale-105 group-hover:opacity-80 transform-gpu will-change-transform"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  {/* Accent themed overlay button */}
+                  <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-accent text-white shadow-2xl transition-transform duration-300 group-hover:scale-110 group-hover:bg-[#ff0000] border border-accent/20">
+                    <span className="ml-1.5 h-0 w-0 border-y-8 border-y-transparent border-l-[14px] border-l-white" />
+                  </div>
+                </div>
               )}
             </div>
           </div>

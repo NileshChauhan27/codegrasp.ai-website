@@ -19,6 +19,7 @@
       <a href="mcp.html">MCP API</a>
       <a href="security.html" class="active">Local Sovereignty &amp; Security</a>
       <a href="faq.html">FAQ</a>
+      <a href="dams-ft.html">DAMS - Fine Tuned</a>
     </nav>
   </aside>
   <main class="content">
@@ -72,7 +73,34 @@
       semantics you control.
     </p>
 
-    <div class="footer">DAMS v2.3 — Local Sovereignty &amp; Security. See <a href="faq.html">FAQ</a> for deployment options.</div>
+    <h2>DAMS-FT: Enterprise-Grade Security Architecture</h2>
+    <p>
+      <strong>DAMS-FT (Fine-Tuned Edition)</strong> extends DAMS with zero-trust security enforcement specifically designed for 
+      enterprise environments, defense contractors, and financial institutions.
+    </p>
+    <h3>DAMS-FT Security Highlights:</h3>
+    <ul>
+      <li><strong>Local Neural Inference:</strong> Bonsai-8B runs entirely on-premise or within isolated Azure VMs. Codebase structure never leaves your security perimeter.</li>
+      <li><strong>Zero External API Dependency:</strong> Search routing, AST parsing, and graph traversals execute 100% locally.</li>
+      <li><strong>PreToolUse Hard Blocking:</strong> Native tool calls (grep, find, file reads) are intercepted and redirected to Gortex AST alternatives before execution.</li>
+      <li><strong>Speculative AST Parse Gate:</strong> Invalid code syntax is never committed to session memory or build pipelines.</li>
+    </ul>
+    <h3>Hardware Requirements:</h3>
+    <table>
+      <thead><tr><th>Component</th><th>Specification</th></tr></thead>
+      <tbody>
+        <tr><td>GPU</td><td>1x NVIDIA RTX 4090 (24GB) or A10G (24GB)</td></tr>
+        <tr><td>VRAM</td><td>5.2 GB (Model) + 0.8 GB (KV Cache) = 6.0 GB Total</td></tr>
+        <tr><td>RAM</td><td>16 GB System Memory</td></tr>
+        <tr><td>Disk</td><td>15 GB NVMe SSD</td></tr>
+      </tbody>
+    </table>
+    <p>
+      See the full <a href="dams-ft.html">DAMS-FT documentation</a> for benchmark results and deployment specifications.
+    </p>
+
+    <div class="footer">DAMS v2.3 — Local Sovereignty &amp; Security. See <a href="faq.html">FAQ</a>
+      <a href="dams-ft.html">DAMS - Fine Tuned</a> for deployment options.</div>
   </main>
 </div>
 </body>

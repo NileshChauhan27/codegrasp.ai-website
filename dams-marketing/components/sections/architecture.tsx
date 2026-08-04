@@ -91,7 +91,7 @@ const steps = [
   {
     id: "kanban",
     stepNumber: "08",
-    title: "Kanban Render",
+    title: "Board Render",
     subtitle: "Interactive board",
     description: "Renders tasks as interactive cards on the dashboard, displaying priority, active status, and associated files.",
     metric: "Real-time state",
@@ -103,7 +103,7 @@ const steps = [
     stepNumber: "09",
     title: "Task Selection",
     subtitle: "Developer activation",
-    description: "Developer clicks and activates a task card on the Kanban board, setting the active target context for execution.",
+    description: "Developer clicks and activates a task card on the task board, setting the active target context for execution.",
     metric: "Task activated",
     badge: "Analyze",
     icon: LayoutDashboard,

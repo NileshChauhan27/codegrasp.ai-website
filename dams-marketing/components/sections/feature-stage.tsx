@@ -3,7 +3,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { features } from "@/lib/features";
 import { easing, duration } from "@/lib/motion";
-import { useMemo } from "react";
 
 interface FeatureStageProps {
   featureIndex: number;
@@ -11,17 +10,6 @@ interface FeatureStageProps {
 
 export function FeatureStage({ featureIndex }: FeatureStageProps) {
   const feature = features[featureIndex];
-  const Icon = feature.icon;
-
-  // Build a deterministic abstract visualization based on the feature title length.
-  const nodes = useMemo(() => {
-    const seed = feature.title.length;
-    return Array.from({ length: 12 }).map((_, i) => ({
-      x: 30 + ((i * 137.5 + seed * 17) % 60),
-      y: 20 + ((i * 89 + seed * 31) % 60),
-      r: 2 + ((i + seed) % 4),
-    }));
-  }, [feature.title]);
 
   return (
     <div
@@ -43,7 +31,7 @@ export function FeatureStage({ featureIndex }: FeatureStageProps) {
       />
 
       {/* Center visualization */}
-      <div className="relative flex flex-1 items-center justify-center">
+      <div className="relative flex flex-1 items-center justify-center py-6 md:py-8">
         <AnimatePresence mode="wait">
           <motion.div
             key={feature.id}
@@ -51,56 +39,15 @@ export function FeatureStage({ featureIndex }: FeatureStageProps) {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.02 }}
             transition={{ duration: duration.layout, ease: easing.enter }}
-            className="relative flex h-56 w-56 items-center justify-center sm:h-72 sm:w-72"
+            className="relative flex items-center justify-center w-full h-[280px] sm:h-[340px] md:h-[400px] rounded-xl overflow-hidden border border-border-subtle bg-[#131517] shadow-2xl shadow-accent/5"
           >
-            {/* Abstract node field */}
-            <svg
-              viewBox="0 0 100 100"
-              className="absolute inset-0 h-full w-full"
-              aria-hidden="true"
-            >
-              {nodes.map((node, i) =>
-                nodes.slice(i + 1).map((other, j) => {
-                  const dist = Math.hypot(node.x - other.x, node.y - other.y);
-                  if (dist > 35) return null;
-                  return (
-                    <line
-                      key={`${i}-${j}`}
-                      x1={node.x}
-                      y1={node.y}
-                      x2={other.x}
-                      y2={other.y}
-                      stroke="rgba(45,139,139,0.25)"
-                      strokeWidth={0.6}
-                    />
-                  );
-                })
-              )}
-              {nodes.map((node, i) => (
-                <circle
-                  key={i}
-                  cx={node.x}
-                  cy={node.y}
-                  r={node.r}
-                  fill={i % 3 === 0 ? "#7c3aed" : "#2d8b8b"}
-                  fillOpacity={0.8}
-                />
-              ))}
-              <circle
-                cx="50"
-                cy="50"
-                r="18"
-                fill="none"
-                stroke="#2d8b8b"
-                strokeWidth="1"
-                strokeDasharray="4 4"
-                opacity={0.5}
-              />
-            </svg>
-
-            <span className="relative z-10 flex h-20 w-20 items-center justify-center rounded-2xl border border-accent/30 bg-accent/10 text-accent shadow-lg shadow-accent/10 sm:h-24 sm:w-24">
-              <Icon className="h-10 w-10 sm:h-12 sm:w-12" />
-            </span>
+            <img
+              src={`/features/${feature.id}.webp`}
+              alt={feature.title}
+              className="max-h-full max-w-full object-contain transition-opacity duration-300 transform-gpu will-change-[transform,opacity]"
+              loading="eager"
+              decoding="async"
+            />
           </motion.div>
         </AnimatePresence>
       </div>

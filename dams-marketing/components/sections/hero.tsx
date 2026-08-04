@@ -5,7 +5,7 @@ import { Section } from "@/components/shared/section";
 import { Container } from "@/components/shared/container";
 import { HeroMesh } from "./hero-mesh";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Shield, Zap, Cpu, Network } from "lucide-react";
+import { ArrowRight, Sparkles, Shield, Zap, Cpu, Network, Rocket, Layers } from "lucide-react";
 import { Github } from "@/components/shared/icons";
 import { GITHUB_URL } from "@/lib/site";
 import { easing, duration, stagger } from "@/lib/motion";
@@ -16,6 +16,10 @@ const trustPills = [
   { icon: Shield, label: "Regression Traps & Safety Gates" },
   { icon: Sparkles, label: "Codebase-Intelligence Research" },
   { icon: Network, label: "Graph RAG & AST Mapping" },
+  { icon: Rocket, label: "DAMS-FT Fine-Tuned Model" },
+  { icon: Cpu, label: "Bonsai-8B Query Router" },
+  { icon: Layers, label: "GCX1 Token Compression" },
+  { icon: Shield, label: "PreToolUse Security Shield" },
 ];
 
 export function Hero() {
@@ -51,7 +55,7 @@ export function Hero() {
               <span className="block text-text-primary">context steering,</span>
               <span className="block text-accent">safety gates, and</span>
               <span className="block text-[#a78bfa]">persistent memory</span>
-              <span className="block text-text-primary">for AI agents</span>
+              <span className="block text-text-primary">(DAMS) for AI agents</span>
             </motion.h1>
 
             <motion.p
@@ -60,7 +64,7 @@ export function Hero() {
               transition={{ duration: duration.reveal, ease: easing.enter, delay: stagger.default * 2 }}
               className="mt-6 text-base text-text-secondary md:text-lg max-w-2xl lg:max-w-none"
             >
-              A local-first development workbench that compiles code context, warms SQLite caches, and intercepts native search tools so agents write features without re-reading the codebase.
+              A local-first, fine-tuned workbench (DAMS-FT) that compiles code context, warms SQLite caches, and intercepts native search tools so agents write features without re-reading the codebase.
             </motion.p>
 
 

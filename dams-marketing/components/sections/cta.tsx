@@ -5,7 +5,7 @@ import { Section } from "@/components/shared/section";
 import { Container } from "@/components/shared/container";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BookOpen } from "lucide-react";
-import { CONTACT_EMAIL, DOCS_URL } from "@/lib/site";
+import { LINKEDIN_URL, DOCS_URL } from "@/lib/site";
 import { easing, duration } from "@/lib/motion";
 
 export function CTA() {
@@ -50,7 +50,7 @@ export function CTA() {
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Button>
               <Button
-                render={<a href={`mailto:${CONTACT_EMAIL}`} />}
+                render={<a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" />}
                 nativeButton={false}
                 variant="outline"
                 size="lg"
